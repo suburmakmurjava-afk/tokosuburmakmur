@@ -1,0 +1,18 @@
+# Add project specific ProGuard rules here.
+
+# Isar
+-keep class dev.isar.** { *; }
+-keep class io.isar.** { *; }
+
+# Flutter
+-keep class io.flutter.app.** { *; }
+-keep class io.flutter.plugin.**  { *; }
+-keep class io.flutter.util.**  { *; }
+-keep class io.flutter.view.**  { *; }
+-keep class io.flutter.**  { *; }
+-keep class io.flutter.plugins.**  { *; }
+
+# Keep native methods
+-keepclasseswithmembernames class * {
+    native <methods>;
+}

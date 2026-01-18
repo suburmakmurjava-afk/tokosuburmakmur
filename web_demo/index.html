@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toko Subur Makmur - Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">🌾🐄</div>
+            <h1 class="splash-title">Toko Subur Makmur</h1>
+            <p class="splash-subtitle">Katalog Pertanian & Peternakan</p>
+            <div class="splash-loader"></div>
+            <p class="splash-loading-text">Menyiapkan katalog Anda...</p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-logo" id="store-logo" onclick="openStoreSettings()">🌾🐄</div>
+                <div class="header-text" onclick="openStoreSettings()">
+                    <h1 id="store-name">Toko Subur Makmur</h1>
+                    <p id="store-tagline">Katalog Pertanian & Peternakan</p>
+                </div>
+                <button class="settings-btn" onclick="openStoreSettings()" title="Pengaturan Toko">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                    </svg>
+                </button>
+                <button class="search-btn" onclick="toggleSearch()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Search Bar (Hidden by default) -->
+            <div id="search-bar" class="search-bar hidden">
+                <input type="text" id="search-input" placeholder="Cari produk..." oninput="searchProducts()">
+                <button onclick="toggleSearch()" class="search-close">✕</button>
+            </div>
+        </header>
+
+        <!-- Main Category Tabs -->
+        <div class="main-category-tabs">
+            <button class="main-tab active" data-main="all" onclick="selectMainCategory('all')">
+                📦 Semua
+            </button>
+            <button class="main-tab" data-main="pertanian" onclick="selectMainCategory('pertanian')">
+                🌾 Pertanian
+            </button>
+            <button class="main-tab" data-main="peternakan" onclick="selectMainCategory('peternakan')">
+                🐄 Peternakan
+            </button>
+        </div>
+
+        <!-- Subcategory Filter with Scroll Arrows -->
+        <div id="subcategory-wrapper" class="subcategory-wrapper hidden">
+            <button class="scroll-arrow scroll-left" onclick="scrollSubcategories('left')">‹</button>
+            <div id="subcategory-filter" class="subcategory-filter">
+                <!-- Subcategories will be rendered here -->
+            </div>
+            <button class="scroll-arrow scroll-right" onclick="scrollSubcategories('right')">›</button>
+        </div>
+
+        <!-- Product Grid -->
+        <main class="product-grid" id="product-grid">
+            <!-- Products will be rendered here -->
+        </main>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state hidden">
+            <div class="empty-icon">📦</div>
+            <h2>Belum Ada Produk</h2>
+            <p>Mulai dengan menambahkan produk pertama Anda</p>
+            <button class="btn-primary" onclick="openAddForm()">
+                <span>+</span> Tambah Produk
+            </button>
+        </div>
+
+        <!-- FAB -->
+        <button class="fab" onclick="openAddForm()">
+            <span>+</span> Tambah Produk
+        </button>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content form-modal">
+            <div class="modal-header">
+                <button class="back-btn" onclick="closeModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h2 id="modal-title">Tambah Produk</h2>
+                <button id="delete-btn" class="delete-btn hidden" onclick="deleteProduct()">Hapus</button>
+            </div>
+
+            <form id="product-form" class="product-form" onsubmit="saveProduct(event)">
+                <!-- Image Picker -->
+                <div class="image-picker" onclick="pickImage()">
+                    <div id="image-preview" class="image-placeholder">
+                        <div class="image-icon">📷</div>
+                        <p>Ketuk untuk menambah gambar</p>
+                        <small>Kamera atau Galeri</small>
+                    </div>
+                    <input type="file" id="image-input" accept="image/*" onchange="previewImage(event)" hidden>
+                </div>
+
+                <!-- Name -->
+                <label class="form-label">Nama Produk</label>
+                <div class="input-group">
+                    <span class="input-icon">📦</span>
+                    <input type="text" id="product-name" placeholder="Masukkan nama produk" required>
+                </div>
+
+                <!-- Main Category -->
+                <label class="form-label">Kategori Utama</label>
+                <div class="category-toggle">
+                    <button type="button" class="toggle-btn active" data-main="pertanian"
+                        onclick="selectFormMainCategory('pertanian')">
+                        🌾 Pertanian
+                    </button>
+                    <button type="button" class="toggle-btn" data-main="peternakan"
+                        onclick="selectFormMainCategory('peternakan')">
+                        🐄 Peternakan
+                    </button>
+                </div>
+
+                <!-- Subcategory -->
+                <label class="form-label">Sub Kategori</label>
+                <div id="form-subcategory" class="subcategory-grid">
+                    <!-- Subcategories will be rendered here -->
+                </div>
+
+                <!-- Prices -->
+                <label class="form-label">Harga Beli (Suplayer)</label>
+                <div class="input-group">
+                    <span class="input-icon">💰</span>
+                    <input type="number" id="product-price-purchase" placeholder="Harga beli" required>
+                </div>
+
+                <label class="form-label" style="margin-top: 12px;">Harga Tengkulak</label>
+                <div class="input-group">
+                    <span class="input-icon">🏪</span>
+                    <input type="number" id="product-price-wholesale" placeholder="Harga tengkulak" required>
+                </div>
+
+                <label class="form-label" style="margin-top: 12px;">Harga Eceran</label>
+                <div class="input-group">
+                    <span class="input-icon">🏷️</span>
+                    <input type="number" id="product-price-retail" placeholder="Harga eceran" required>
+                </div>
+
+                <!-- Stock Counter -->
+                <label class="form-label">Jumlah Stok</label>
+                <div class="stock-counter">
+                    <button type="button" class="counter-btn" onclick="adjustStock(-1)">−</button>
+                    <div class="counter-display">
+                        <span id="stock-value">0</span>
+                        <small>Stok</small>
+                    </div>
+                    <button type="button" class="counter-btn" onclick="adjustStock(1)">+</button>
+                </div>
+
+                <!-- Description -->
+                <label class="form-label">Deskripsi (Opsional)</label>
+                <textarea id="product-description" placeholder="Masukkan deskripsi produk..." rows="3"></textarea>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-primary btn-full">
+                    <span id="submit-icon">+</span>
+                    <span id="submit-text">Tambah Produk</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="details-modal" class="modal hidden">
+        <div class="modal-content details-modal">
+            <div class="details-handle"></div>
+            <div id="details-content">
+                <!-- Details will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Subcategory Modal -->
+    <div id="subcategory-modal" class="modal hidden">
+        <div class="modal-content form-modal" style="max-height: 70vh;">
+            <div class="modal-header">
+                <button class="back-btn" onclick="closeSubcategoryModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h2>Tambah Jenis Baru</h2>
+                <div style="width: 44px;"></div>
+            </div>
+
+            <form id="subcategory-form" onsubmit="saveSubcategory(event)">
+                <!-- Category Indicator -->
+                <div id="subcat-category-label" class="category-badge-form"></div>
+
+                <!-- Icon Picker -->
+                <label class="form-label">Pilih Icon</label>
+                <div class="icon-picker-grid" id="icon-picker">
+                    <!-- Icons will be rendered here -->
+                </div>
+
+                <!-- Name -->
+                <label class="form-label">Nama Jenis</label>
+                <div class="input-group">
+                    <span class="input-icon" id="selected-icon-preview">📦</span>
+                    <input type="text" id="subcategory-name" placeholder="Contoh: Pupuk NPK" required>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-primary btn-full" id="subcat-submit-btn">
+                    <span id="subcat-submit-icon">+</span>
+                    <span id="subcat-submit-text">Tambah Jenis</span>
+                </button>
+
+                <!-- Delete Button (only shown when editing) -->
+                <button type="button" class="btn-danger btn-full hidden" id="delete-subcat-btn"
+                    onclick="deleteSubcategory()">
+                    🗑️ Hapus Jenis Ini
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Store Settings Modal -->
+    <div id="store-settings-modal" class="modal hidden">
+        <div class="modal-content form-modal" style="max-height: 80vh;">
+            <div class="modal-header">
+                <button class="back-btn" onclick="closeStoreSettings()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h2>⚙️ Pengaturan Toko</h2>
+                <div style="width: 44px;"></div>
+            </div>
+
+            <form id="store-settings-form" onsubmit="saveStoreSettings(event)">
+                <!-- Logo Picker -->
+                <label class="form-label">Pilih Logo Toko</label>
+                <div class="icon-picker-grid" id="logo-picker">
+                    <!-- Logos will be rendered here -->
+                </div>
+
+                <!-- Store Name -->
+                <label class="form-label">Nama Toko</label>
+                <div class="input-group">
+                    <span class="input-icon">🏪</span>
+                    <input type="text" id="settings-store-name" placeholder="Nama toko Anda" required>
+                </div>
+
+                <!-- Tagline -->
+                <label class="form-label">Tagline / Slogan</label>
+                <div class="input-group">
+                    <span class="input-icon">💬</span>
+                    <input type="text" id="settings-store-tagline" placeholder="Contoh: Toko Pertanian Lengkap">
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-primary btn-full">
+                    <span>💾</span>
+                    <span>Simpan Pengaturan</span>
+                </button>
+
+                <!-- Reset Button -->
+                <button type="button" class="btn-outline btn-full" onclick="resetStoreSettings()"
+                    style="margin-top: 12px;">
+                    🔄 Reset ke Default
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

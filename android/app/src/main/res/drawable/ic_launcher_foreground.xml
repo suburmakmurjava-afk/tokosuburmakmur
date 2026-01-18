@@ -1,0 +1,35 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Grain/Wheat icon representing agriculture -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,28
+                          C54,28 48,36 48,44
+                          C48,46 49,48 51,48
+                          L51,60
+                          C51,60 46,55 42,52
+                          C40,50.5 38,50 36,52
+                          C36,52 42,58 46,62
+                          L51,66
+                          L51,72
+                          C49,72 48,74 48,76
+                          C48,78 50,80 54,80
+                          C58,80 60,78 60,76
+                          C60,74 59,72 57,72
+                          L57,66
+                          L62,62
+                          C66,58 72,52 72,52
+                          C70,50 68,50.5 66,52
+                          C62,55 57,60 57,60
+                          L57,48
+                          C59,48 60,46 60,44
+                          C60,36 54,28 54,28Z"/>
+    <!-- Cow head representing livestock -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,48 L30,44 L28,48 L32,48Z
+                          M76,48 L78,44 L80,48 L76,48Z"/>
+</vector>
